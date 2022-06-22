@@ -98,4 +98,19 @@ class ContactTest extends TestCase
         $response->assertSessionHasErrors('email');
         $this->assertCount(0, Contact::all());
     }
+
+    public function test_a_contact_can_be_retrieved()
+    {
+        $contact = Contact::factory()->create();
+        // Retrieve test contact
+        $response = $this->get(
+            "/api/contact/{$contact->id}"
+        );
+        $response->assertJson([
+            'name' => $contact->name,
+            'email' => $contact->email,
+            'birthday' => str_replace('"','',json_encode($contact->birthday)),
+            'company' => $contact->company
+        ]);
+    }
 }
